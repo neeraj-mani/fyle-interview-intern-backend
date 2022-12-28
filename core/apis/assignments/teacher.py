@@ -3,7 +3,7 @@ from core.models.assignments import Assignment
 from core.apis.responses import APIResponse
 from core.apis import decorators
 from core.models.assignments import GradeEnum
-
+from core import db
 from .schema import AssignmentSchema, AssignmentSubmitSchema
 
 teacher_assignments_resources = Blueprint("teacher_assignments_resources", __name__)
@@ -22,5 +22,6 @@ def list_assignments_by_teacher(p):
 def update_grade(p, incoming_payload):
     print(incoming_payload['id'])
     updated_assignment = Assignment.update(incoming_payload['id'],incoming_payload['grade'],principal=p)
+    db.session.commit()
     updated_assignment_dump = AssignmentSchema().dump(updated_assignment)
     return APIResponse.respond(data=updated_assignment_dump)
